@@ -58,15 +58,16 @@ void setup() {
 
   canbus->init();
   ledController->init();
+  #ifdef LIGHT_BAR_ENABLED
   lightBarController->init();
-  
+  #endif
   ledController->startSequence();
 
   char buf[128];
-  snprintf(buf, 128, " sw-version %d.%d.%d is happily running on hw-version %d.%d",
+  snprintf(buf, 128, " sw-version %d.%d.%d started on hw-version %d.%d",
     SOFTWARE_VERSION_MAJOR, SOFTWARE_VERSION_MINOR, SOFTWARE_VERSION_PATCH,
     HARDWARE_VERSION_MAJOR, HARDWARE_VERSION_MINOR);
-  Logger::notice("rESCue", buf);
+  Logger::notice("floaty", buf);
 }
 
 void loop() {
@@ -90,7 +91,9 @@ void loop() {
 
   // call the led loops
   ledController->loop(&new_forward, &new_backward, &idle);
+  #ifdef LIGHT_BAR_ENABLED
   lightBarController->loop();
+  #endif
 
 }
 

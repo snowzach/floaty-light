@@ -8,14 +8,6 @@
 
 #define LOG_TAG_CANDEVICE "CanDevice"
 
-#ifndef CAN_TX_PIN
-#define CAN_TX_PIN 26
-#endif //CAN_TX_PIN
-
-#ifndef CAN_RX_PIN
-#define CAN_RX_PIN 27
-#endif //CAN_RX_PIN
-
 class CanDevice {
   private:
     SemaphoreHandle_t mutex_v = xSemaphoreCreateMutex();

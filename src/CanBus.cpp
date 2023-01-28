@@ -43,7 +43,7 @@ void CanBus::loop() {
         }
 
         // if (millis() - lastBalanceData > interval) {
-        //     requestFloatData();
+        //     requestBalanceData();
         // }
 
         if (millis() - lastFloatData > interval) {

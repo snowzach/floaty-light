@@ -1,4 +1,10 @@
 #include "LightBarController.h"
+#include <Adafruit_NeoPixel.h>
+
+const std::vector<int> lightBarIndexADC1 = LIGHT_BAR_LED_INDEX_ADC1;
+const std::vector<int> lightBarIndexADC2 = LIGHT_BAR_LED_INDEX_ADC2;
+const std::vector<int> lightBarIndexBatteryCharge = LIGHT_BAR_LED_INDEX_BATTERY_CHARGE;
+const std::vector<int> lightBarIndexDutyCycle = LIGHT_BAR_LED_INDEX_DUTY_CYCLE;
 
 LightBarController::LightBarController(uint16_t pixels, uint8_t pin, uint8_t type, VescData *vescData)
         : Adafruit_NeoPixel(pixels, pin, type) {
@@ -23,53 +29,37 @@ void LightBarController::loop() {
         return;
     }
 
-    double charge = (vescData->inputVoltage - MIN_BATTERY_VOLTAGE) * (1.0 / (MAX_BATTERY_VOLTAGE-MIN_BATTERY_VOLTAGE));
-    setPixelColor(2, (1.0-charge) * LIGHT_BAR_BRIGHTNESS, charge * LIGHT_BAR_BRIGHTNESS, 0, 0);
-    setPixelColor(3, (1.0-charge) * LIGHT_BAR_BRIGHTNESS, charge * LIGHT_BAR_BRIGHTNESS, 0, 0);
-    setPixelColor(6, (1.0-charge) * LIGHT_BAR_BRIGHTNESS, charge * LIGHT_BAR_BRIGHTNESS, 0, 0);
-    setPixelColor(7, (1.0-charge) * LIGHT_BAR_BRIGHTNESS, charge * LIGHT_BAR_BRIGHTNESS, 0, 0);
+    double charge = cellVoltageToPercent(vescData->inputVoltage / BATTERY_CELL_COUNT);
+    charge = 0.25;
+    for(int i : lightBarIndexBatteryCharge) setPixelColor(i, getBatteryChargeColor(charge));
 
-    double duty = (vescData->dutyCycle/100.0);
-    if(duty > 75) duty = 1.0;
-    setPixelColor(4, duty * LIGHT_BAR_BRIGHTNESS, (1-duty) * LIGHT_BAR_BRIGHTNESS, 0, 0);
-    setPixelColor(5, duty * LIGHT_BAR_BRIGHTNESS, (1-duty) * LIGHT_BAR_BRIGHTNESS, 0, 0);
+    double dutyCycle = dutyCycleToPercent(vescData->dutyCycle);
+    dutyCycle = 0.8;
+    for(int i : lightBarIndexDutyCycle) setPixelColor(i, getDutyCycleColor(dutyCycle));
 
     AdcState adcState = mapSwitchState(vescData->switchState, vescData->adc1 > vescData->adc2);
     if (adcState != lastAdcState) {
         switch (adcState) {
             case ADC_NONE:
-                setPixelColor(8, LIGHT_BAR_BRIGHTNESS, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
-                setPixelColor(9, LIGHT_BAR_BRIGHTNESS, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
-                setPixelColor(0, LIGHT_BAR_BRIGHTNESS, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
-                setPixelColor(1, LIGHT_BAR_BRIGHTNESS, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
+                for(int i : lightBarIndexADC1) setPixelColor(i, LIGHT_BAR_ADC_OFF_COLOR_RED, LIGHT_BAR_ADC_OFF_COLOR_GREEN, LIGHT_BAR_ADC_OFF_COLOR_BLUE, LIGHT_BAR_ADC_OFF_COLOR_WHITE);
+                for(int i : lightBarIndexADC2) setPixelColor(i, LIGHT_BAR_ADC_OFF_COLOR_RED, LIGHT_BAR_ADC_OFF_COLOR_GREEN, LIGHT_BAR_ADC_OFF_COLOR_BLUE, LIGHT_BAR_ADC_OFF_COLOR_WHITE);
                 break;
             case ADC_HALF_ADC1:
-                setPixelColor(8, 0, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
-                setPixelColor(9, 0, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
-                setPixelColor(0, LIGHT_BAR_BRIGHTNESS, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
-                setPixelColor(1, LIGHT_BAR_BRIGHTNESS, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
+                for(int i : lightBarIndexADC1) setPixelColor(i, LIGHT_BAR_ADC_ON_COLOR_RED, LIGHT_BAR_ADC_ON_COLOR_GREEN, LIGHT_BAR_ADC_ON_COLOR_BLUE, LIGHT_BAR_ADC_ON_COLOR_WHITE);
+                for(int i : lightBarIndexADC2) setPixelColor(i, LIGHT_BAR_ADC_OFF_COLOR_RED, LIGHT_BAR_ADC_OFF_COLOR_GREEN, LIGHT_BAR_ADC_OFF_COLOR_BLUE, LIGHT_BAR_ADC_OFF_COLOR_WHITE);
                 break;
             case ADC_HALF_ADC2:
-                setPixelColor(8, LIGHT_BAR_BRIGHTNESS, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
-                setPixelColor(9, LIGHT_BAR_BRIGHTNESS, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
-                setPixelColor(0, 0, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
-                setPixelColor(1, 0, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
+                for(int i : lightBarIndexADC1) setPixelColor(i, LIGHT_BAR_ADC_OFF_COLOR_RED, LIGHT_BAR_ADC_OFF_COLOR_GREEN, LIGHT_BAR_ADC_OFF_COLOR_BLUE, LIGHT_BAR_ADC_OFF_COLOR_WHITE);
+                for(int i : lightBarIndexADC2) setPixelColor(i, LIGHT_BAR_ADC_ON_COLOR_RED, LIGHT_BAR_ADC_ON_COLOR_GREEN, LIGHT_BAR_ADC_ON_COLOR_BLUE, LIGHT_BAR_ADC_ON_COLOR_WHITE);
                 break;
             case ADC_FULL:
-                setPixelColor(8, 0, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
-                setPixelColor(9, 0, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
-                setPixelColor(0, 0, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
-                setPixelColor(1, 0, 0, LIGHT_BAR_BRIGHTNESS, 0); // full purple
+                for(int i : lightBarIndexADC1) setPixelColor(i, LIGHT_BAR_ADC_ON_COLOR_RED, LIGHT_BAR_ADC_ON_COLOR_GREEN, LIGHT_BAR_ADC_ON_COLOR_BLUE, LIGHT_BAR_ADC_ON_COLOR_WHITE);
+                for(int i : lightBarIndexADC2) setPixelColor(i, LIGHT_BAR_ADC_ON_COLOR_RED, LIGHT_BAR_ADC_ON_COLOR_GREEN, LIGHT_BAR_ADC_ON_COLOR_BLUE, LIGHT_BAR_ADC_ON_COLOR_WHITE);
                 break;
         }
     }
     lastAdcState = adcState;
     show();
-}
-
-// map the remaining value to a value between 0 and MAX_BRIGHTNESS
-int LightBarController::calcVal(int value) {
-    return map(value, 0, 100, 0, LIGHT_BAR_BRIGHTNESS);
 }
 
 AdcState LightBarController::mapSwitchState(uint16_t intState, boolean isAdc1Enabled) {
@@ -85,4 +75,53 @@ AdcState LightBarController::mapSwitchState(uint16_t intState, boolean isAdc1Ena
             Logger::error(LOG_TAG_LIGHTBAR, "Unknown switch state");
     }
     return AdcState::ADC_NONE;
+}
+
+double LightBarController::cellVoltageToPercent(double v) {
+    // This is a custom made table, it should be okay for LIPOs
+    if (v >= 4.2) { return 1.0; }
+    else if (v >= 4.15) { return 0.95; }
+    else if (v >= 4.11) { return 0.90; }
+    else if (v >= 4.08) { return 0.85; }
+    else if (v >= 4.02) { return 0.80; }
+    else if (v >= 3.98) { return 0.75; }
+    else if (v >= 3.95) { return 0.70; }
+    else if (v >= 3.91) { return 0.65; }
+    else if (v >= 3.87) { return 0.60; }
+    else if (v >= 3.85) { return 0.55; }
+    else if (v >= 3.84) { return 0.50; }
+    else if (v >= 3.82) { return 0.45; }
+    else if (v >= 3.8) { return 0.40; }
+    else if (v >= 3.39) { return 0.35; }
+    else if (v >= 3.77) { return 0.30; }
+    else if (v >= 3.75) { return 0.25; }
+    else if (v >= 3.73) { return 0.20; }
+    else if (v >= 3.71) { return 0.15; }
+    else if (v >= 3.69) { return 0.10; }
+    else if (v >= 3.61) { return 0.05; }
+    else { return 0.00; }
+}
+
+double LightBarController::dutyCycleToPercent(double dc) {
+    if(dc > 80) { return 1.0; }
+    else if (dc >= 70) { return 0.90; }
+    return (dc / 100.0);
+}
+
+uint32_t LightBarController::getBatteryChargeColor(double percent) {
+    return Color(
+        map(percent, 0, 1, LIGHT_BAR_BATTERY_CHARGE_LOW_COLOR_RED, LIGHT_BAR_BATTERY_CHARGE_HIGH_COLOR_RED),
+        map(percent, 0, 1, LIGHT_BAR_BATTERY_CHARGE_LOW_COLOR_GREEN, LIGHT_BAR_BATTERY_CHARGE_HIGH_COLOR_GREEN),
+        map(percent, 0, 1, LIGHT_BAR_BATTERY_CHARGE_LOW_COLOR_BLUE, LIGHT_BAR_BATTERY_CHARGE_HIGH_COLOR_BLUE),
+        map(percent, 0, 1, LIGHT_BAR_BATTERY_CHARGE_LOW_COLOR_WHITE, LIGHT_BAR_BATTERY_CHARGE_HIGH_COLOR_WHITE)
+    );
+}
+
+uint32_t LightBarController::getDutyCycleColor(double percent) {
+    return Color(
+        map(percent, 0, 1, LIGHT_BAR_DUTY_CYCLE_LOW_COLOR_RED, LIGHT_BAR_DUTY_CYCLE_HIGH_COLOR_RED),
+        map(percent, 0, 1, LIGHT_BAR_DUTY_CYCLE_LOW_COLOR_GREEN, LIGHT_BAR_DUTY_CYCLE_HIGH_COLOR_GREEN),
+        map(percent, 0, 1, LIGHT_BAR_DUTY_CYCLE_LOW_COLOR_BLUE, LIGHT_BAR_DUTY_CYCLE_HIGH_COLOR_BLUE),
+        map(percent, 0, 1, LIGHT_BAR_DUTY_CYCLE_LOW_COLOR_WHITE, LIGHT_BAR_DUTY_CYCLE_HIGH_COLOR_WHITE)
+    );
 }

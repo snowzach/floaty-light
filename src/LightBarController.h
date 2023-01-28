@@ -5,15 +5,10 @@
 #include <Logger.h>
 #include "config.h"
 #include "ILedController.h"
+#include <Adafruit_NeoPixel.h>
 
 #define LOG_TAG_LIGHTBAR "LightBar"
 
-#ifdef LIGHT_BAR_ENABLED
- #include <Adafruit_NeoPixel.h>
- extern Adafruit_NeoPixel lightPixels;
-#endif //LIGHT_BAR_ENABLED
-
-enum  ErrorCode { ERR_NONE };
 enum  AdcState { ADC_NONE, ADC_HALF_ADC1, ADC_HALF_ADC2, ADC_FULL, ADC_INIT };
 
 class LightBarController : public Adafruit_NeoPixel {
@@ -25,6 +20,10 @@ class LightBarController : public Adafruit_NeoPixel {
     private:
         int calcVal(int value);
         AdcState mapSwitchState(uint16_t intState, boolean isAdc1Enabled);
+        double cellVoltageToPercent(double v);
+        double dutyCycleToPercent(double v);
+        uint32_t getBatteryChargeColor(double percent);
+        uint32_t getDutyCycleColor(double percent);
         VescData *vescData;
 };
 

@@ -166,7 +166,7 @@ void Ws28xxController::changePattern(Pattern pattern, boolean isForward, boolean
                          Color((LIGHT_SECONDARY_COLOR_RED * LIGHT_MAX_BRIGHTNESS) >> 8,
                                (LIGHT_SECONDARY_COLOR_GREEN * LIGHT_MAX_BRIGHTNESS) >> 8,
                                (LIGHT_SECONDARY_COLOR_BLUE * LIGHT_MAX_BRIGHTNESS) >> 8),
-                         LIGHT_START_TIMEOUT / (numPixels() / 4));
+                         LIGHT_START_DURATION / (numPixels() / 4));
             break;
         case BATTERY_INDICATOR:
             clear();
@@ -349,8 +349,8 @@ void Ws28xxController::batteryIndicator(uint16_t timeinterval) {
 
 void Ws28xxController::batteryIndicatorUpdate() {
     float voltage = vescData->inputVoltage;
-    int min_voltage = MIN_BATTERY_VOLTAGE * 100;
-    int max_voltage = MAX_BATTERY_VOLTAGE * 100;
+    int min_voltage = BATTERY_MIN_VOLTAGE * 100;
+    int max_voltage = BATTERY_MAX_VOLTAGE * 100;
     int voltage_range = max_voltage - min_voltage;
     int used = max_voltage - voltage * 100; // calculate how much the voltage has dropped
     int value = voltage_range - used; // calculate the remaining value to lowest voltage
@@ -466,7 +466,7 @@ void Ws28xxController::startSequence() {
     int timeinterval = 0;
     switch (LIGHT_START_PATTERN) {
         case Pattern::THEATER_CHASE:
-            timeinterval = LIGHT_START_TIMEOUT / numPixels();
+            timeinterval = LIGHT_START_DURATION / numPixels();
             theaterChase(
                     Color((LIGHT_PRIMARY_COLOR_RED * LIGHT_MAX_BRIGHTNESS) >> 8,
                           (LIGHT_PRIMARY_COLOR_GREEN * LIGHT_MAX_BRIGHTNESS) >> 8,
@@ -476,18 +476,18 @@ void Ws28xxController::startSequence() {
                           (LIGHT_SECONDARY_COLOR_BLUE * LIGHT_MAX_BRIGHTNESS) >> 8), timeinterval);
             break;
         case Pattern::CYLON:
-            timeinterval = LIGHT_START_TIMEOUT / numPixels();
+            timeinterval = LIGHT_START_DURATION / numPixels();
             cylon(
                     Color((LIGHT_SECONDARY_COLOR_RED * LIGHT_MAX_BRIGHTNESS) >> 8,
                           (LIGHT_SECONDARY_COLOR_GREEN * LIGHT_MAX_BRIGHTNESS) >> 8,
                           (LIGHT_SECONDARY_COLOR_BLUE * LIGHT_MAX_BRIGHTNESS) >> 8), timeinterval);
             break;
         case Pattern::RAINBOW_CYCLE:
-            timeinterval = LIGHT_START_TIMEOUT / numPixels();
+            timeinterval = LIGHT_START_DURATION / numPixels();
             rainbowCycle(10, Direction::FORWARD);
             break;
         case Pattern::SLIDE:
-            timeinterval = LIGHT_START_TIMEOUT / (numPixels() / 4);
+            timeinterval = LIGHT_START_DURATION / (numPixels() / 4);
             slidingLight(Color((LIGHT_PRIMARY_COLOR_RED * LIGHT_MAX_BRIGHTNESS) >> 8,
                           (LIGHT_PRIMARY_COLOR_GREEN * LIGHT_MAX_BRIGHTNESS) >> 8,
                           (LIGHT_PRIMARY_COLOR_BLUE * LIGHT_MAX_BRIGHTNESS) >> 8),
