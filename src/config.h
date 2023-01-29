@@ -18,7 +18,7 @@
 // #define FAKE_VESC_ENABLED
 
 #define LIGHT_NUMPIXELS 42 // the number of LEDs (first half front, second half back, needs to be even number)
-#define LIGHT_LED_TYPE NEO_GRBW + NEO_KHZ800
+#define LIGHT_LED_TYPE NEO_GRBW + NEO_KHZ800 // Update to whatever LED types you have.
 
 #define LIGHT_MAX_BRIGHTNESS 255
 #define LIGHT_MAX_BRIGHTNESS_BRAKE 50
@@ -35,8 +35,8 @@
 #define LIGHT_IDLE_TIMEOUT 120000
 #define LIGHT_IDLE_PATTERN Pattern::PULSE
 
-#define LIGHT_BAR_ENABLED      // activates a light bar
-#define LIGHT_BAR_NUMPIXELS 10 // the number of LEDS of the battery bar
+#define LIGHT_BAR_ENABLED      // activates a light bar, comment if you don't have one
+#define LIGHT_BAR_NUMPIXELS 10 // the number of LEDS in the light bar
 // Which LEDs represent which values
 #define LIGHT_BAR_LED_INDEX_ADC1 {8,9}
 #define LIGHT_BAR_LED_INDEX_ADC2 {0,1}
@@ -49,7 +49,7 @@
 #define LIGHT_BAR_ADC_ON_COLOR_GREEN 0
 #define LIGHT_BAR_ADC_ON_COLOR_BLUE 100
 #define LIGHT_BAR_ADC_ON_COLOR_WHITE 0
-#define LIGHT_BAR_ADC_OFF_COLOR_RED 100
+#define LIGHT_BAR_ADC_OFF_COLOR_RED 30
 #define LIGHT_BAR_ADC_OFF_COLOR_GREEN 0
 #define LIGHT_BAR_ADC_OFF_COLOR_BLUE 100
 #define LIGHT_BAR_ADC_OFF_COLOR_WHITE 0
@@ -68,6 +68,6 @@
 #define LIGHT_BAR_DUTY_CYCLE_HIGH_COLOR_RED 255
 #define LIGHT_BAR_DUTY_CYCLE_HIGH_COLOR_GREEN 0
 #define LIGHT_BAR_DUTY_CYCLE_HIGH_COLOR_BLUE 0
-#define LIGHT_BAR_DUTY_CYCLE_HIGH_COLOR_WHITE 50
+#define LIGHT_BAR_DUTY_CYCLE_HIGH_COLOR_WHITE 30
 
 #endif //__CONFIG_H__
