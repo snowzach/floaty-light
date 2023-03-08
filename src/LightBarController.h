@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <Logger.h>
 #include "config.h"
-#include "ILedController.h"
+#include "VescData.h"
 #include <Adafruit_NeoPixel.h>
 
 #define LOG_TAG_LIGHTBAR "LightBar"
@@ -18,10 +18,7 @@ class LightBarController : public Adafruit_NeoPixel {
         void loop();
 
     private:
-        int calcVal(int value);
         AdcState mapSwitchState(uint16_t intState, boolean isAdc1Enabled);
-        double cellVoltageToPercent(double v);
-        double dutyCycleToPercent(double v);
         uint32_t getBatteryChargeColor(double percent);
         uint32_t getDutyCycleColor(double percent);
         VescData *vescData;

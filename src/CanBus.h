@@ -29,6 +29,7 @@ class CanBus {
       CanDevice *candevice;
       void requestFirmwareVersion();
       void requestRealtimeData();
+      void requestSetupSelectiveData();
       void requestBalanceData();
       void requestFloatData();
       void ping();
