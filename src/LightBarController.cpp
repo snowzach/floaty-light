@@ -82,9 +82,9 @@ int scaleRange(int x, int srcFrom, int srcTo, int destFrom, int destTo) {
 }
 
 uint32_t LightBarController::getBatteryChargeColor(double percent) {
-    return ColorHSV(MAX(scaleRange(percent * 100, 0, 100, -30, 85), 0) * 256.0, 255, 100);
+    return ColorHSV(MAX(scaleRange(percent * 100, 0, 100, -30, 85), 0) * 256.0, 255, LIGHT_BAR_BATTERY_BRIGHTNESS);
 }
 
 uint32_t LightBarController::getDutyCycleColor(double percent) {
-    return ColorHSV(MAX(MIN(scaleRange(percent, 0, 100, 128, -30), 85), 0) * 256.0, 255, 100);
+    return ColorHSV(MAX(MIN(scaleRange(percent, 0, 100, 128, -30), 85), 0) * 256.0, 255, LIGHT_BAR_DUTY_CYCLE_BRIGHTNESS);
 }
