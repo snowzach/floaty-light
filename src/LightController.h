@@ -16,7 +16,9 @@ class LightController : public Adafruit_NeoPixel {
         void loop();
 
     private:
+        AdcState lastAdcState;
         VescData *vescData;
+        int direction;
         AdcState mapSwitchState(uint16_t intState, boolean isAdc1Enabled);
         uint32_t bootColor(double percent);
         uint32_t getColor(double percent, double brightness);

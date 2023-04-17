@@ -7,6 +7,7 @@
 
 #define VESC_CAN_ID 25 // VESC-ID as configured in VESC as decimal
 // #define FAKE_VESC_ENABLED
+#define ERPM_IDLE 10
 
 #define LIGHT_NUMPIXELS 42 // the number of LEDs (first half front, second half back, needs to be even number)
 #define LIGHT_LED_TYPE NEO_GRBW + NEO_KHZ800 // Update to whatever LED types you have.
@@ -41,6 +42,7 @@
 #define LIGHT_REAR_COLOR_GREEN 0
 #define LIGHT_REAR_COLOR_BLUE 0
 #define LIGHT_REAR_COLOR_WHITE 0
+#define LIGHT_IDLE_BRIGHTNESS 128
 
 #define LIGHT_BAR_ENABLED      // activates a light bar, comment if you don't have one
 #define LIGHT_BAR_NUMPIXELS 10 // the number of LEDS in the light bar

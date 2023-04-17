@@ -8,28 +8,22 @@ LightController::LightController(uint16_t pixels, uint8_t pin, uint8_t type, Ves
     this->vescData = vescData;
 }
 
+double map01(double x, double start, double end) {
+    return (x * (end-start)) + start;
+}
+
 void LightController::init() {
     Logger::notice(LOG_TAG_LIGHT, "initializing ...");
     begin();
     show();
+    direction = 0;
 }
-
-int direction = 0;
-const double erpm_idle = 10;
-
-AdcState lastAdcState2;
 
 void LightController::loop() {
 
     long uptime = millis();
     if(uptime < LIGHT_BOOT_TIME_MS) {
         for(int x=0; x < LIGHT_NUMPIXELS; x++) setPixelColor(x, bootColor(double(LIGHT_BOOT_TIME_MS-uptime) / double(LIGHT_BOOT_TIME_MS)));
-
-        std::string bufferString;
-        char val[25];
-        snprintf(val, 25, "%d", uptime);
-        bufferString += val;
-        Logger::notice(LOG_TAG_LIGHT, bufferString.c_str());
     } else {
         AdcState adcState = mapSwitchState(vescData->switchState, vescData->adc1 > vescData->adc2);
         switch(vescData->state) {
@@ -39,7 +33,7 @@ void LightController::loop() {
             case STATE_FAULT_SWITCH_HALF:
             case STATE_FAULT_SWITCH_FULL:
             case STATE_FAULT_QUICKSTOP:
-                if (adcState != lastAdcState2) {
+                if (adcState != lastAdcState) {
                     switch (adcState) {
                         case ADC_NONE:
                             for(int x=0; x < LIGHT_NUMPIXELS; x++) setPixelColor(x, Color(LIGHT_STOP_NONE_COLOR_RED,LIGHT_STOP_NONE_COLOR_GREEN,LIGHT_STOP_NONE_COLOR_BLUE,LIGHT_STOP_NONE_COLOR_WHITE));
@@ -49,36 +43,29 @@ void LightController::loop() {
                             break;
                         case ADC_HALF_ADC2:
                             for(int x=0; x < LIGHT_NUMPIXELS; x++) setPixelColor(x, Color(LIGHT_STOP_ADC2_COLOR_RED,LIGHT_STOP_ADC2_COLOR_GREEN,LIGHT_STOP_ADC2_COLOR_BLUE,LIGHT_STOP_ADC2_COLOR_WHITE));                        break;
-                        case ADC_FULL:
-                            // It won't actually hit this, it will move to running
-                            for(int x=0; x < LIGHT_NUMPIXELS; x++) setPixelColor(x, Color(0,0,0,0));
                             break;
                     }
-                    lastAdcState2 = adcState;
+                    lastAdcState = adcState;
                 }
                 break;
 
             // Running
             default:
-                if(vescData->erpm > erpm_idle) {
+                if(vescData->erpm > ERPM_IDLE) {
                     if(direction < 255) direction += 1;
-                } else if(vescData->erpm < -erpm_idle) {
+                } else if(vescData->erpm < -ERPM_IDLE) {
                     if(direction > -255) direction -= 1;
                 } else {
                     // It's idle
                     if(direction) direction += (direction > 0 ? -1 : 1);  
                 }
 
-                for(int x=0; x < LIGHT_NUMPIXELS/2; x++) setPixelColor(x, getColor((direction+255)/511.0, ABS(direction)));
-                for(int x=LIGHT_NUMPIXELS/2; x < LIGHT_NUMPIXELS; x++) setPixelColor(x, getColor((255-direction)/511.0, ABS(direction)));
+                for(int x=0; x < LIGHT_NUMPIXELS/2; x++) setPixelColor(x, getColor((direction+255)/511.0, map01(ABS(direction)/255.0, LIGHT_IDLE_BRIGHTNESS, 255.0)));
+                for(int x=LIGHT_NUMPIXELS/2; x < LIGHT_NUMPIXELS; x++) setPixelColor(x, getColor((255-direction)/511.0, map01(ABS(direction)/255.0, LIGHT_IDLE_BRIGHTNESS, 255.0)));
+                lastAdcState = ADC_INIT;
         }
     }
-
     show();
-}
-
-double map01(double x, double start, double end) {
-    return (x * (end-start)) + start;
 }
 
 uint32_t LightController::bootColor(double percent) {

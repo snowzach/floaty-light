@@ -16,6 +16,8 @@ class LightBarController : public Adafruit_NeoPixel {
         void loop();
 
     private:
+        AdcState lastAdcState;
+        unsigned long lastAdcStateChange;
         AdcState mapSwitchState(uint16_t intState, boolean isAdc1Enabled);
         uint32_t getBatteryChargeColor(double percent);
         uint32_t getDutyCycleColor(double percent);

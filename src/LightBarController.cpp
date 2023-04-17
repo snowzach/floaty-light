@@ -19,10 +19,9 @@ void LightBarController::init() {
     Logger::notice(LOG_TAG_LIGHTBAR, "initializing ...");
     begin();
     show();
+    lastAdcState = ADC_INIT;
+    lastAdcStateChange = 0;
 }
-
-AdcState lastAdcState = ADC_INIT;
-unsigned long lastAdcStateChange = 0;
 
 // updates the light bar, depending on the LED count
 void LightBarController::loop() {
