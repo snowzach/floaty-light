@@ -9,8 +9,6 @@
 
 #define LOG_TAG_LIGHTBAR "LightBar"
 
-enum  AdcState { ADC_NONE, ADC_HALF_ADC1, ADC_HALF_ADC2, ADC_FULL, ADC_INIT };
-
 class LightBarController : public Adafruit_NeoPixel {
     public:
         LightBarController(uint16_t pixels, uint8_t pin, uint8_t type, VescData *vescData);

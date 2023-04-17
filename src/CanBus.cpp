@@ -220,6 +220,7 @@ void CanBus::processFrame(twai_message_t rx_frame, int frameCount) {
             // vescData->name = readStringValueFromBuffer(2 + offset, 12, isProxyRequest);
         } else if (command == 0x24 && buffer.at(1) == 0x65 && buffer.at(2) == 0x01) {
             int offset = 3;
+            vescData->state = readInt8ValueFromBuffer(12 + offset, isProxyRequest) & 0xF; 
             vescData->switchState = readInt8ValueFromBuffer(13 + offset, isProxyRequest); 
             vescData->adc1 = readFloat32ValueFromBuffer(14 + offset, isProxyRequest);
             vescData->adc2 = readFloat32ValueFromBuffer(18 + offset, isProxyRequest);

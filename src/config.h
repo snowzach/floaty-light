@@ -11,6 +11,28 @@
 #define LIGHT_NUMPIXELS 42 // the number of LEDs (first half front, second half back, needs to be even number)
 #define LIGHT_LED_TYPE NEO_GRBW + NEO_KHZ800 // Update to whatever LED types you have.
 
+// Boot light sequence
+#define LIGHT_BOOT_TIME_MS 1000 // Time to show boot light (0 to disable)
+#define LIGHT_BOOT_COLOR_RED 0
+#define LIGHT_BOOT_COLOR_GREEN 20
+#define LIGHT_BOOT_COLOR_BLUE 20
+#define LIGHT_BOOT_COLOR_WHITE 0
+
+// Stopped Color for foot pads
+#define LIGHT_STOP_NONE_COLOR_RED 5
+#define LIGHT_STOP_NONE_COLOR_GREEN 0
+#define LIGHT_STOP_NONE_COLOR_BLUE 0
+#define LIGHT_STOP_NONE_COLOR_WHITE 0
+#define LIGHT_STOP_ADC1_COLOR_RED 0
+#define LIGHT_STOP_ADC1_COLOR_GREEN 0
+#define LIGHT_STOP_ADC1_COLOR_BLUE 10
+#define LIGHT_STOP_ADC1_COLOR_WHITE 0
+#define LIGHT_STOP_ADC2_COLOR_RED 10
+#define LIGHT_STOP_ADC2_COLOR_GREEN 0
+#define LIGHT_STOP_ADC2_COLOR_BLUE 20
+#define LIGHT_STOP_ADC2_COLOR_WHITE 0
+
+// Running lights front and back
 #define LIGHT_FRONT_COLOR_RED 255
 #define LIGHT_FRONT_COLOR_GREEN 255
 #define LIGHT_FRONT_COLOR_BLUE 255
