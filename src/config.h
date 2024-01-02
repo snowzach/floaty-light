@@ -44,8 +44,9 @@
 #define LIGHT_REAR_COLOR_WHITE 0
 #define LIGHT_IDLE_BRIGHTNESS 128
 
-#define LIGHT_BAR_ENABLED      // activates a light bar, comment if you don't have one
-#define LIGHT_BAR_NUMPIXELS 10 // the number of LEDS in the light bar
+#define LIGHT_BAR_ENABLED                        // activates a light bar, comment if you don't have one
+#define LIGHT_BAR_NUMPIXELS 10                   // the number of LEDS in the light bar
+#define LIGHT_BAR_LED_TYPE NEO_GRBW + NEO_KHZ800 // Update to whatever LED types you have in the light bar.
 // Which LEDs represent which values
 #define LIGHT_BAR_LED_INDEX_ADC1 {8,9}
 #define LIGHT_BAR_LED_INDEX_ADC2 {0,1}
