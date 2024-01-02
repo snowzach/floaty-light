@@ -40,7 +40,7 @@ void setup() {
       Serial.begin(115200);
   }
   lightController = new LightController(LIGHT_NUMPIXELS, LIGHT_PIN, LIGHT_LED_TYPE, &vescData);
-  lightBarController = new LightBarController(LIGHT_BAR_NUMPIXELS, LIGHT_BAR_PIN, LIGHT_LED_TYPE, &vescData);
+  lightBarController = new LightBarController(LIGHT_BAR_NUMPIXELS, LIGHT_BAR_PIN, LIGHT_BAR_LED_TYPE, &vescData);
   
   delay(50);
 
